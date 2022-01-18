@@ -50,12 +50,10 @@ exports.Login = async (req, res) => {
         var token = jwt.sign(dataToken, process.env.API_KEY);
 
         res.status(200).send({
-            status: "success",
-            data: {user: {
-                fullName: userExist.fullName,
-                email: userExist.email,
-                token
-            }}
+            message: "success",
+            email: userExist.email,
+            status: userExist.status,
+            token
         })
 
     } catch (error) {
@@ -71,13 +69,27 @@ exports.Register = async (req, res) => {
     const email = req.body.email
     const password = req.body.password
     const fullName = req.body.fullName
+    const phone = req.body.phone
+    const gender = req.body.gender
+    const address = req.body.address
+    
     // Validate input user
     const schema = Joi.object({
         email: Joi.string().email().required(),
         password: Joi.string().required(),
-        fullName: Joi.string().min(3).required()
+        fullName: Joi.string().min(3).required(),
+        phone: Joi.number().min(10).required(),
+        gender: Joi.string().min(3).required(),
+        address: Joi.string().min(3).required(),
     })
-    const {error} = schema.validate({email,password,fullName})
+    const {error} = schema.validate({
+        email,
+        password,
+        fullName,
+        phone,
+        gender,
+        address
+    })
 
     if(error){
         return res.status(400).send({
@@ -90,9 +102,12 @@ exports.Register = async (req, res) => {
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(password, salt)
 
-        const newUser = await user.create({
+        const newUser = await User.create({
             fullName, 
-            email, 
+            email,
+            phone,
+            gender,
+            address,
             password: hashedPassword
         })
 
@@ -101,12 +116,8 @@ exports.Register = async (req, res) => {
         var token = jwt.sign(dataToken,process.env.API_KEY)
 
         res.status(201).send({
-            status: "success",
-            data: {user: {
-                fullName: newUser.fullName,
-                email: newUser.email,
-                token
-            }}
+            message: "success",
+            token
         })
 
     } catch (error) {
@@ -120,10 +131,11 @@ exports.Register = async (req, res) => {
 }
 exports.checkAuth = async (req, res) => {
     try {
+        console.log("idididi", req.user.id)
         const id = req.user.id;
         console.log("HASIL ID ID ===", id)
   
-        const dataUser = await user.findOne({
+        const dataUser = await User.findOne({
             where: { id },
             attributes: {
                 exclude: ["createdAt", "updatedAt", "password"],

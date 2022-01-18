@@ -14,9 +14,10 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Transaction.init({
-    userId: DataTypes.INTEGER,
-    proof: DataTypes.STRING,
-    remainingActive: DataTypes.STRING,
+    UserId: DataTypes.INTEGER,
+    attache: DataTypes.STRING,
+    startDate: DataTypes.DATE,
+    dueDate: DataTypes.DATE,
     status: DataTypes.STRING
   }, {
     sequelize,

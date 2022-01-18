@@ -14,30 +14,34 @@ module.exports = {
       email: {
         type: Sequelize.STRING
       },
-      status: {
-        type: Sequelize.STRING
-      },
       gender: {
         type: Sequelize.STRING
       },
       phone: {
         type: Sequelize.STRING
       },
-      addres: {
+      address: {
         type: Sequelize.STRING
+      },
+      status: {
+        type: Sequelize.STRING,
+        defaultValue: 'Non Active'
+      },
+      role: {
+        type: Sequelize.STRING,
+        defaultValue: 'member'
       },
       password: {
         type: Sequelize.TEXT
       },
-      role: {
-        type: Sequelize.STRING
-      },
       createdAt: {
         allowNull: false,
+        defaultValue: Sequelize.fn('now'),
         type: Sequelize.DATE
       },
       updatedAt: {
         allowNull: false,
+        defaultValue: Sequelize.fn('now'),
         type: Sequelize.DATE
       }
     });

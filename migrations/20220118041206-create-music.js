@@ -1,36 +1,44 @@
 'use strict';
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Transactions', {
+    await queryInterface.createTable('Music', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      userId: {
+      artisId: {
+        type: Sequelize.INTEGER,
+        references: {
+            model: "users",
+            key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+      },
+      year: {
         type: Sequelize.INTEGER
       },
-      proof: {
+      thumbnail: {
         type: Sequelize.STRING
       },
-      remainingActive: {
-        type: Sequelize.STRING
-      },
-      status: {
+      attache: {
         type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,
+        defaultValue: Sequelize.fn('now'),
         type: Sequelize.DATE
       },
       updatedAt: {
         allowNull: false,
+        defaultValue: Sequelize.fn('now'),
         type: Sequelize.DATE
       }
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Transactions');
+    await queryInterface.dropTable('Music');
   }
 };
