@@ -51,9 +51,13 @@ exports.Login = async (req, res) => {
 
         res.status(200).send({
             message: "success",
-            email: userExist.email,
-            status: userExist.status,
-            token
+            data : {
+                fullName: userExist.fullName,
+                email: userExist.email,
+                status: userExist.status,
+                token    
+            }
+            
         })
 
     } catch (error) {
@@ -117,7 +121,12 @@ exports.Register = async (req, res) => {
 
         res.status(201).send({
             message: "success",
-            token
+            data : {
+                fullName: newUser.fullName,
+                email: newUser.email,
+                status: newUser.status,
+                token    
+            }
         })
 
     } catch (error) {
