@@ -76,7 +76,8 @@ exports.Register = async (req, res) => {
     const phone = req.body.phone
     const gender = req.body.gender
     const address = req.body.address
-    
+    const listAs = req.body.listAs
+    const role = listAs > 0 ? "admin" : "member"
     // Validate input user
     const schema = Joi.object({
         email: Joi.string().email().required(),
@@ -86,13 +87,14 @@ exports.Register = async (req, res) => {
         gender: Joi.string().min(3).required(),
         address: Joi.string().min(3).required(),
     })
+    
     const {error} = schema.validate({
         email,
         password,
         fullName,
         phone,
         gender,
-        address
+        address,
     })
 
     if(error){
@@ -112,6 +114,7 @@ exports.Register = async (req, res) => {
             phone,
             gender,
             address,
+            role,
             password: hashedPassword
         })
 
