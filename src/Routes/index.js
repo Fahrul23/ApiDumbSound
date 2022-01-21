@@ -26,7 +26,7 @@ router.delete('/music/:id', Auth, deleteMusic)
 router.get('/transaction/:id', Auth, detailTransaction)
 router.get('/transactions', Auth, getTransaction)
 router.post('/transaction', Auth,uploadFile('attache'),addTransaction)
-router.patch('/transaction/:id', Auth, approveTransaction)
+router.post('/transaction/:transactionId/:userId', Auth, approveTransaction)
 router.delete('/transaction/:id', Auth, deleteTransaction)
 
 module.exports = router
