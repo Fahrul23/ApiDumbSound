@@ -1,7 +1,9 @@
 const express = require('express');
 const { addArtist, editArtist, getArtists, deleteArtist } = require('../Controllers/Artist');
 const{ Login, Register, checkAuth } = require('../controllers/Auth');
+const { addMusic, getMusics, detailMusic, deleteMusic } = require('../Controllers/Music');
 const {Auth} = require('../middlewares/Auth')
+const {uploadFile} = require('../middlewares/uploadFile')
 
 const router = express.Router()
 
@@ -13,5 +15,11 @@ router.get('/artists', Auth, getArtists)
 router.post('/artist', Auth, addArtist)
 router.patch('/artist/:id', Auth, editArtist)
 router.delete('/artist/:id', Auth, deleteArtist)
+
+router.get('/musics', Auth, getMusics)
+router.get('/music/:id', Auth, detailMusic)
+router.post('/music', Auth,uploadFile('thumbnail','attache'),addMusic)
+// router.patch('/music/:id', Auth,uploadFile('thumbnail','attache'),editMusic)
+router.delete('/music/:id', Auth, deleteMusic)
 
 module.exports = router

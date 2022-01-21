@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       Artist.hasMany(models.Music,{
           as: "Music",
           foreignKey: {
-              name: "artisId"
+              name: "artistId"
           }
       })
     }

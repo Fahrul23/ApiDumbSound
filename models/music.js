@@ -14,13 +14,13 @@ module.exports = (sequelize, DataTypes) => {
       Music.belongsTo(models.Artist,{
           as: "Artist",
           foreignKey: {
-              name: "artisId"
+              name: "artistId"
           }
       })
     }
   }
   Music.init({
-    artisId: DataTypes.INTEGER,
+    artistId: DataTypes.INTEGER,
     year: DataTypes.INTEGER,
     thumbnail: DataTypes.STRING,
     attache: DataTypes.STRING
