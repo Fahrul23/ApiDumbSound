@@ -99,12 +99,12 @@ exports.addTransaction = async (req, res) => {
     }
 }
 exports.approveTransaction = async (req, res) => {
-    const {id} = req.params
+    const {transactionId,  userId} = req.params
     const startDate = req.body.startDate
     const endDate = req.body.endDate
     try {
         let transaction = await Transaction.findOne({
-            where: {id}
+            where: {id: transactionId}
         })
         if(!transaction) {
             return res.status(404).send({
@@ -117,11 +117,17 @@ exports.approveTransaction = async (req, res) => {
             endDate,
             status: "success"
         },{
-            where: {id}
+            where: {id: transactionId}
+        })
+
+        await User.update({
+            subscribe: true
+        }, {
+            where: {id: userId}
         })
 
         let data = await Transaction.findOne({
-            where: {id},
+            where: {id : transactionId},
             include: [
               {
                 model:User,
