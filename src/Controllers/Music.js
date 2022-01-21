@@ -108,48 +108,29 @@ exports.addMusic = async (req, res) => {
   }
 }
 
-exports.editMusic = async (req, res) => {
-  const {id} = req.params
-  try {
-    let musicExist = await Music.findOne({
-      where: {id}
-    })
-    if(!musicExist) {
-      return res.status(404).send({
-        message: "Music Not Found"
-      })
+exports.deleteMusic = async (req, res) => {
+    const {id} = req.params
+    try {
+        let music = await Music.findOne({
+            where: {id}
+        })
+        if(!music) {
+            return res.status(404).send({
+                message: "Music Not Found"
+            })
+        }
+        await Music.destroy({
+            where: {id}
+        })
+        res.status(200).send({
+            message: "success"
+        })
+
+    } catch (error) {
+        console.log(error.message)
+        res.status(500).send({
+            status: "failed",
+            message: "internal server error"
+        })
     }
-
-    // if(!req.files){
-    //   console.log("tidak ada")
-    // }else {
-    //   console.log("ada")
-    // }
-    console.log(req.files)
-
-    
-    // const thumbnail = req.files[0] ? req.files[0].filename : musicExist.thumbnail
-    // const attache  = req.files[1] ? req.files[1].filename : musicExist.attache
-    
-    // let response = await Music.update({
-    //   title,
-    //   year,
-    //   thumbnail,
-    //   attache
-    // })
-    // let music = await Music.findOne({
-    //   where: {id},
-    //   attributes: {
-    //     exclude: ['artistId','createdAt','updatedAt']
-    //   }
-    // })
-    
-    res.status(200).send({
-      message: "Success",
-      data: musicExist
-    })
-    
-  } catch (error) {
-    
-  }
 }
