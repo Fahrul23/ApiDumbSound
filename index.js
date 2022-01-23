@@ -9,7 +9,7 @@ app.use(express.json())
 app.use(cors())
 
 app.use('/api/v1', Routes)
-// app.use('/uploads', express.static('uploads'))
+app.use('/uploads', express.static('uploads'))
 
 
 app.listen(PORT, () => {

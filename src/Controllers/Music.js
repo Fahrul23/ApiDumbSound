@@ -86,10 +86,9 @@ exports.addMusic = async (req, res) => {
   }
   try {
       const newMusic = await Music.create({
-          artistId : 1,
+          artistId,
           title,
           year,
-          goal: req.body.goal,
           thumbnail: req.files[0].filename,
           attache: req.files[1].filename,
       })
@@ -132,5 +131,95 @@ exports.deleteMusic = async (req, res) => {
             status: "failed",
             message: "internal server error"
         })
+    }
+}
+
+exports.editMusic = async (req, res) => {
+    const {id, artistId} = req.params
+    try {
+        const musicExist = await Music.findOne({
+            where: {id}
+        })
+
+        if(!musicExist) {
+            return res.status(404).send({
+                status: "error",
+                message: "Music not found"
+            })   
+        }
+        let thumbnail = ''
+        let attache = ''
+        if(req.files.length > 0){
+            if(req.files[1]){
+                if(req.files[0].fieldname === "thumbnail"){
+                    thumbnail = req.files[0].filename
+                }
+                else{
+                    thumbnail = req.files[1].filename
+                }
+                
+                if(req.files[0].fieldname === "attache"){
+                    attache = req.files[0].filename
+                }
+                else{
+                    attache = req.files[1].filename
+                }
+            }else if(req.files[0]){
+                if(req.files[0].fieldname === "thumbnail"){
+                    thumbnail = req.files[0].filename
+                }
+                else{
+                    thumbnail = musicExist.thumbnail
+                }
+
+                if(req.files[0].fieldname === "attache"){
+                    attache = req.files[0].filename
+                }
+                else{
+                    attache = musicExist.attache
+                }
+            }
+        }else {
+            thumbnail = musicExist.thumbnail
+            attache = musicExist.attache
+        }
+        
+        await Music.update({
+            artistId,
+            title : req.body.title,
+            year: req.body.year,
+            thumbnail,
+            attache
+        },{
+            where: {id}
+        })
+
+        let music = await Music.findOne({
+            where: {id},
+            include: [
+              {
+                model: Artist,
+                as: 'Artist',
+                attributes: {
+                  exclude: ['createdAt','updatedAt']
+                }
+              }
+            ],
+            attributes: {
+              exclude: ['artistId','createdAt','updatedAt']
+            }
+        })
+
+        res.status(200).send({
+            status: "success",
+            data: music
+        });
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            status: "failed",
+            message: "internal server error"
+        })  
     }
 }

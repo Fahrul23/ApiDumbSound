@@ -21,6 +21,36 @@ exports.getArtists = async (req, res) => {
     }
 }
 
+exports.detailArtist = async (req, res) => {
+    const {id} = req.params
+    try {
+        
+        const artist = await Artist.findOne({
+            where: {id},
+            attributes: {
+                exclude: ['createdAt','updatedAt']
+            }
+        })
+
+        if(!artist) {
+            res.status(404).send({
+                message: "success",
+                data: artist
+            })
+        }
+
+        res.status(200).send({
+            message: "success",
+            data: artist
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            message: "internal server error"
+        })
+    }
+}
+
 exports.addArtist = async (req, res) => {
     const body = req.body
     const schema = Joi.object({

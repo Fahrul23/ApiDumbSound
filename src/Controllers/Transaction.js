@@ -98,10 +98,17 @@ exports.addTransaction = async (req, res) => {
         })
     }
 }
+
+// exports.approveTransaction = async (req, res) => {
+//     console.log(req)
+//     res.send('ok')
+// }
+
 exports.approveTransaction = async (req, res) => {
-    const {transactionId,  userId} = req.params
+    const {transactionId} = req.params
     const startDate = req.body.startDate
     const endDate = req.body.endDate
+    
     try {
         let transaction = await Transaction.findOne({
             where: {id: transactionId}
@@ -120,10 +127,62 @@ exports.approveTransaction = async (req, res) => {
             where: {id: transactionId}
         })
 
+        let data = await Transaction.findOne({
+            where: {id : transactionId},
+            include: [
+              {
+                model:User,
+                as: 'User',
+                attributes: {
+                  exclude: ['password','createdAt','updatedAt']
+                }
+              }
+            ],
+            attributes: {
+              exclude: ['userId','createdAt','updatedAt']
+            }
+        })
         await User.update({
             subscribe: true
         }, {
-            where: {id: userId}
+            where: {id: data.User.id}
+        })
+
+        res.status(200).send({
+            message: "success",
+            data
+        })
+
+        
+
+    } catch (error) {
+        console.log(error.message)
+        res.status(500).send({
+            status: "failed",
+            message: "internal server error"
+        })
+    }
+}
+
+exports.cancelTransaction = async (req, res) => {
+    const {transactionId} = req.params
+    try {
+
+        let transaction = await Transaction.findOne({
+            where: {id: transactionId}
+        })
+        if(!transaction) {
+            return res.status(404).send({
+                message: "Transaction not found"
+            })
+        }
+
+        await Transaction.update({
+            startDate : null,
+            endDate: null,
+            status: "cancel"
+        },{
+            where: {id: transactionId}
         })
 
         let data = await Transaction.findOne({
@@ -140,7 +199,15 @@ exports.approveTransaction = async (req, res) => {
             attributes: {
               exclude: ['userId','createdAt','updatedAt']
             }
-          })
+        })
+
+        await User.update({
+            subscribe: false
+        }, {
+            where: {id: data.User.id}
+        })
+
+
 
         res.status(200).send({
             message: "success",
@@ -155,7 +222,7 @@ exports.approveTransaction = async (req, res) => {
             message: "internal server error"
         })
     }
-} 
+}
 
 exports.deleteTransaction = async (req, res) => {
     const {id} = req.params

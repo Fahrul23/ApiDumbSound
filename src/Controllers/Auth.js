@@ -54,7 +54,8 @@ exports.Login = async (req, res) => {
             data : {
                 fullName: userExist.fullName,
                 email: userExist.email,
-                status: userExist.status,
+                role: userExist.role,
+                subscribe: userExist.subscribe,
                 token    
             }
             
@@ -127,7 +128,8 @@ exports.Register = async (req, res) => {
             data : {
                 fullName: newUser.fullName,
                 email: newUser.email,
-                status: newUser.status,
+                role: newUser.role,
+                subscribe: newUser.subscribe,
                 token    
             }
         })
@@ -162,13 +164,13 @@ exports.checkAuth = async (req, res) => {
   
         res.status(200).send({
             status: "success...",
-            data: {
-                user: {
-                    id: dataUser.id,
-                    name: dataUser.fullName,
-                    email: dataUser.email,
-                },
-            },
+            data: {  
+                id: dataUser.id,
+                name: dataUser.fullName,
+                email: dataUser.email,
+                role: dataUser.role,
+                subscribe: dataUser.subscribe
+            }
         });
     } catch (error) {
         console.log(error)
