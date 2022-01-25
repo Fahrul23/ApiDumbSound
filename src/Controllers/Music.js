@@ -78,13 +78,14 @@ exports.addMusic = async (req, res) => {
       title: Joi.string().min(3).required(),
       year: Joi.number().min(4).required(),
   })
+
   const {error} = schema.validate({artistId, title, year})
-  if(error) {
-      return res.status(400).send({
-          message: error.details[0].message
-      })
-  }
-  try {
+    if(error) {
+        return res.status(400).send({
+            message: error.details[0].message
+        })
+    }
+    try {
       const newMusic = await Music.create({
           artistId,
           title,
@@ -99,7 +100,7 @@ exports.addMusic = async (req, res) => {
       })
 
   } catch (error) {
-      console.log(error.message)
+      console.log(error)
       res.status(500).send({
           status: "failed",
           message: "internal server error"

@@ -68,6 +68,45 @@ exports.detailTransaction = async (req, res) => {
     }
 }
 
+exports.transactionByUserId = async (req, res) => {
+    const userId = req.user.id
+    try {
+        let transaction = await Transaction.findOne({
+            where: {userId},
+            include: [
+            {
+                model:User,
+                as: 'User',
+                attributes: {
+                exclude: ['password','createdAt','updatedAt']
+                }
+            }
+            ],
+            attributes: {
+            exclude: ['userId','createdAt','updatedAt']
+            }
+        })
+  
+        if(!transaction) {
+            return res.status(404).send({
+                message: "Transaction Not Found",
+                data: []
+            })
+        }
+  
+        res.status(200).send({
+            message: "success",
+            data: transaction
+        })
+    } catch (error) {
+        console.log(error.message)
+        res.status(500).send({
+            status: "failed",
+            message: "internal server error"
+        })
+    }
+}
+
 exports.addTransaction = async (req, res) => {
     const userId =  req.body.userId
     const schema = Joi.object({
@@ -80,6 +119,26 @@ exports.addTransaction = async (req, res) => {
         })
     }
     try {
+
+        const transactionExist = await Transaction.findOne({
+            where: {userId}
+        })
+
+        if(transactionExist){
+            await Transaction.update({
+                startDate: null,
+                endDate: null,
+                status: "pending"
+            },{
+                where: {id: transactionExist.id}
+            })
+            return res.status(201).send({
+                    status: "success",
+                    data: transactionExist
+                })
+        }
+
+
         const newTransaction = await Transaction.create({
             userId,
             attache: req.files[0].filename,
@@ -99,10 +158,6 @@ exports.addTransaction = async (req, res) => {
     }
 }
 
-// exports.approveTransaction = async (req, res) => {
-//     console.log(req)
-//     res.send('ok')
-// }
 
 exports.approveTransaction = async (req, res) => {
     const {transactionId} = req.params

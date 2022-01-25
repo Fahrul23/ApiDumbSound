@@ -109,6 +109,16 @@ exports.Register = async (req, res) => {
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(password, salt)
 
+        const emailExist = await User.findOne({
+            where: {email}
+        })
+
+
+        if(emailExist){
+            return res.status(400).send({
+                message: "Email already exists"
+            })
+        }
         const newUser = await User.create({
             fullName, 
             email,
