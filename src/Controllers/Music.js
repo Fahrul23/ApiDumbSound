@@ -17,9 +17,27 @@ exports.getMusics = async (req, res) => {
         exclude: ['artistId','createdAt','updatedAt']
       }
     })
+    if(musics.length > 0) {
+        let response = []
+        musics.map(music => {
+            let data = {
+                title: music.title,
+                name: music.Artist.name,
+                attache: music.attache,
+                thumbnail: music.thumbnail,
+                year: music.year,
+            }
+            response.push(data)
+        })
+        
+        return  res.status(200).send({
+                    message: "success",
+                    data: response
+                })
+    }
     res.status(200).send({
-      message: "success",
-      data: musics
+        message: "success",
+        data: musics
     })
   } catch (error) {
     console.log(error.message)
