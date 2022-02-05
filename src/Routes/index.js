@@ -1,6 +1,6 @@
 const express = require('express');
 const { addArtist, editArtist, getArtists, deleteArtist, detailArtist } = require('../Controllers/Artist');
-const{ Login, Register, checkAuth } = require('../controllers/Auth');
+const {Login, Register, checkAuth} = require('../Controllers/Auth')
 const { addMusic, getMusics, detailMusic, deleteMusic, editMusic, searchMusic } = require('../Controllers/Music');
 const { getTransaction, detailTransaction, addTransaction, approveTransaction, deleteTransaction, cancelTransaction,transactionByUserId } = require('../Controllers/Transaction');
 const {Auth} = require('../middlewares/Auth')
