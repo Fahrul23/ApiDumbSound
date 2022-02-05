@@ -12,7 +12,7 @@ module.exports = {
      * }], {});
     */
     return queryInterface.bulkInsert(
-        "users",
+        "Users",
         [
             {
                 email: "dumbways@mail.com",
