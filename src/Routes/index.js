@@ -1,7 +1,7 @@
 const express = require('express');
 const { addArtist, editArtist, getArtists, deleteArtist, detailArtist } = require('../Controllers/Artist');
 const{ Login, Register, checkAuth } = require('../controllers/Auth');
-const { addMusic, getMusics, detailMusic, deleteMusic, editMusic } = require('../Controllers/Music');
+const { addMusic, getMusics, detailMusic, deleteMusic, editMusic, searchMusic } = require('../Controllers/Music');
 const { getTransaction, detailTransaction, addTransaction, approveTransaction, deleteTransaction, cancelTransaction,transactionByUserId } = require('../Controllers/Transaction');
 const {Auth} = require('../middlewares/Auth')
 const {uploadFile} = require('../middlewares/uploadFile')
@@ -23,6 +23,7 @@ router.get('/music/:id', Auth, detailMusic)
 router.post('/music', Auth,uploadFile('thumbnail','attache'),addMusic)
 router.patch('/music/:id/:userId', Auth,uploadFile('thumbnail','attache'),editMusic)
 router.delete('/music/:id', Auth, deleteMusic)
+router.post('/search-music', searchMusic)
 
 router.get('/transaction/:id', Auth, detailTransaction)
 router.get('/transaction/', Auth, transactionByUserId)

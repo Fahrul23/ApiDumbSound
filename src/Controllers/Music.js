@@ -1,5 +1,6 @@
 const {Music, Artist} = require('../../models/index')
 const Joi = require('joi')
+const {Op} = require('sequelize')
 
 exports.getMusics = async (req, res) => {
   try {
@@ -240,5 +241,52 @@ exports.editMusic = async (req, res) => {
             status: "failed",
             message: "internal server error"
         })  
+    }
+}
+
+
+exports.searchMusic = async (req, res) => {
+    const keyword = req.body.keyword
+    try {
+        const result = await Music.findAll({
+            where: {
+                title: {
+                    [Op.substring]: keyword
+                }
+            },
+            include: [{
+                model: Artist,
+                as: 'Artist'
+            }]
+
+        })
+
+        if(result.length > 0) {
+            let musics = []
+            result.map(music => {
+                let data = {
+                    title: music.title,
+                    name: music.Artist.name,
+                    attache: music.attache,
+                    thumbnail: music.thumbnail,
+                    year: music.year
+                }
+                musics.push(data)
+            })
+            res.status(200).send({
+                message: "success",
+                data: musics
+            })
+        }else {
+            return res.status(404).send({
+                message: "music not found"
+            })
+        }
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            message: "internal server error"
+        })        
     }
 }

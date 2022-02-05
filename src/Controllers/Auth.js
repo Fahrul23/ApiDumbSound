@@ -139,7 +139,7 @@ exports.Register = async (req, res) => {
                 fullName: newUser.fullName,
                 email: newUser.email,
                 role: newUser.role,
-                subscribe: newUser.subscribe,
+                subscribe: false,
                 token    
             }
         })
@@ -155,9 +155,6 @@ exports.Register = async (req, res) => {
 }
 exports.checkAuth = async (req, res) => {
     try {
-        console.log("idididi", req.user.id)
-        const id = req.user.id;
-        console.log("HASIL ID ID ===", id)
   
         const dataUser = await User.findOne({
             where: { id },
